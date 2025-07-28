@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma CONEXIÓN AL T.E.C.H.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .strategy-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .strategy-title {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .strategy-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .weeks-container {
+            display: grid;
+            gap: 30px;
+        }
+
+        .week-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .week-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .week-title {
+            font-size: 2.2rem;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .week-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .week-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .activities {
+            display: grid;
+            gap: 15px;
+        }
+
+        .activity {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .activity:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .activity-time {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .activity-description {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .cta-highlight {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        .scroll-progress {
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(45deg, #ff6b6b, #4d96ff);
+            border-radius: 2px;
+            transition: height 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .week-title {
+                font-size: 1.8rem;
+            }
+            
+            .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>CONEXIÓN AL T.E.C.H.</h1>
+            <p>Cronograma de Campaña Actualizado</p>
+        </div>
+
+        <div class="strategy-section">
+            <h2 class="strategy-title">🎯 Estrategia General</h2>
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <h3>📘 Facebook</h3>
+                    <p>Posts, reels, historias, lives y eventos</p>
+                </div>
+                <div class="strategy-card">
+                    <h3>📱 WhatsApp</h3>
+                    <p>Grupo privado con información exclusiva, tips y recordatorios</p>
+                </div>
+                <div class="strategy-card">
+                    <h3>🎯 Call to Action</h3>
+                    <p>"Únete al grupo privado de WhatsApp y asegura tu cupo"</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="weeks-container">
+            <!-- Semana 1 -->
+            <div class="week-card" data-week="1">
+                <div class="week-title">
+                    <div class="week-number">1</div>
+                    <div>
+                        <div>LANZAMIENTO Y EXPECTATIVA</div>
+                        <div class="week-subtitle">Creando expectativa y construyendo comunidad</div>
+                    </div>
+                </div>
+                <div class="activities">
+                    <div class="activity">
+                        <div class="activity-time">📅 Lunes 10:00 AM</div>
+                        <div class="activity-description">
+                            Post teaser: "¿Listo para tu CONEXIÓN AL T.E.C.H.?"
+                            <div class="cta-highlight">+ link al grupo WhatsApp</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Martes 6:00 PM</div>
+                        <div class="activity-description">
+                            Historia con cuenta regresiva
+                            <div class="cta-highlight">+ invitación al grupo</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Miércoles 11:00 AM</div>
+                        <div class="activity-description">Carrusel: beneficios del taller</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Jueves 5:00 PM</div>
+                        <div class="activity-description">Reel: adelanto del ambiente</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Viernes 8:00 PM</div>
+                        <div class="activity-description">Live: presentación del evento y grupo</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Sábado 11:00 AM</div>
+                        <div class="activity-description">
+                            Post motivacional
+                            <div class="cta-highlight">+ CTA al grupo</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Domingo 7:00 PM</div>
+                        <div class="activity-description">
+                            Email marketing: lanzamiento oficial
+                            <div class="cta-highlight">+ invitación al grupo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semana 2 -->
+            <div class="week-card" data-week="2">
+                <div class="week-title">
+                    <div class="week-number">2</div>
+                    <div>
+                        <div>CONEXIÓN EMOCIONAL</div>
+                        <div class="week-subtitle">Creando vínculos y mostrando valor</div>
+                    </div>
+                </div>
+                <div class="activities">
+                    <div class="activity">
+                        <div class="activity-time">📅 Lunes 10:00 AM</div>
+                        <div class="activity-description">
+                            Testimonio en video
+                            <div class="cta-highlight">+ acceso al grupo para info exclusiva</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Martes 6:00 PM</div>
+                        <div class="activity-description">Historia interactiva: encuesta "¿Qué buscas?"</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Miércoles 12:00 PM</div>
+                        <div class="activity-description">Post educativo: "3 señales de que necesitas reconectar contigo mismo"</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Jueves 8:00 PM</div>
+                        <div class="activity-description">Reel: "Lo que te llevas en 30 segundos"</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Viernes 5:00 PM</div>
+                        <div class="activity-description">
+                            Live: mini ejercicio
+                            <div class="cta-highlight">+ acceso al grupo</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Sábado 11:00 AM</div>
+                        <div class="activity-description">Publicación: conoce al equipo organizador</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Domingo 8:00 PM</div>
+                        <div class="activity-description">
+                            Email: historias inspiradoras
+                            <div class="cta-highlight">+ recordatorio de cupos limitados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semana 3 -->
+            <div class="week-card" data-week="3">
+                <div class="week-title">
+                    <div class="week-number">3</div>
+                    <div>
+                        <div>INSCRIPCIONES MASIVAS</div>
+                        <div class="week-subtitle">Urgencia y acción directa</div>
+                    </div>
+                </div>
+                <div class="activities">
+                    <div class="activity">
+                        <div class="activity-time">📅 Lunes 10:00 AM</div>
+                        <div class="activity-description">
+                            Post: "Última semana con precio especial"
+                            <div class="cta-highlight">+ enlace al grupo</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Martes 6:00 PM</div>
+                        <div class="activity-description">Historia: prueba social (personas ya inscritas)</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Miércoles 11:00 AM</div>
+                        <div class="activity-description">Carrusel: "7 razones para no perderte CONEXIÓN AL T.E.C.H."</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Jueves 5:00 PM</div>
+                        <div class="activity-description">Reel: detrás de cámaras</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Viernes 8:00 PM</div>
+                        <div class="activity-description">Live: preguntas frecuentes + dinámica de inscripción en vivo</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Sábado 10:00 AM</div>
+                        <div class="activity-description">
+                            Historia: "¿Ya apartaste tu cupo? ¡Quedan pocos!"
+                            <div class="cta-highlight">+ CTA al grupo</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Domingo 7:00 PM</div>
+                        <div class="activity-description">
+                            Email: cierre inscripciones
+                            <div class="cta-highlight">+ recordatorio en grupo WhatsApp</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semana 4 -->
+            <div class="week-card" data-week="4">
+                <div class="week-title">
+                    <div class="week-number">4</div>
+                    <div>
+                        <div>CIERRE Y RECORDATORIO</div>
+                        <div class="week-subtitle">Preparación final y ejecución del evento</div>
+                    </div>
+                </div>
+                <div class="activities">
+                    <div class="activity">
+                        <div class="activity-time">📅 Lunes 10:00 AM</div>
+                        <div class="activity-description">Post: "¡Estamos listos para recibirte!" (detalles prácticos)</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Martes 6:00 PM</div>
+                        <div class="activity-description">Historia: checklist "¿Qué llevar al taller?"</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Miércoles 8:00 PM</div>
+                        <div class="activity-description">Reel motivacional: "Esto es lo que te espera..."</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Jueves 12:00 PM</div>
+                        <div class="activity-description">Email: confirmación y tips para asistentes</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Viernes 7:00 PM</div>
+                        <div class="activity-description">Historia y post: "¡Mañana comienza CONEXIÓN AL T.E.C.H.!"</div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Sábado 9:00 AM</div>
+                        <div class="activity-description">
+                            Cobertura en vivo día 1
+                            <div class="cta-highlight">(grupo WhatsApp actualizado)</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Domingo 9:00 AM</div>
+                        <div class="activity-description">
+                            Cobertura en vivo día 2
+                            <div class="cta-highlight">(grupo WhatsApp actualizado)</div>
+                        </div>
+                    </div>
+                    <div class="activity">
+                        <div class="activity-time">📅 Lunes 9:00 AM</div>
+                        <div class="activity-description">Cobertura en vivo día 3 + agradecimiento a participantes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Scroll progress indicator
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            scrollProgress.style.height = scrollPercent + '%';
+        });
+
+        // Add animation delays to week cards
+        const weekCards = document.querySelectorAll('.week-card');
+        weekCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.2}s`;
+        });
+
+        // Interactive hover effects for activities
+        const activities = document.querySelectorAll('.activity');
+        activities.forEach(activity => {
+            activity.addEventListener('mouseenter', () => {
+                activity.style.transform = 'translateX(10px) scale(1.02)';
+            });
+            
+            activity.addEventListener('mouseleave', () => {
+                activity.style.transform = 'translateX(0) scale(1)';
+            });
+        });
+
+        // Smooth scroll behavior for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>
